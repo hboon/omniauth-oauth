@@ -25,19 +25,25 @@ module OmniAuth
       end
 
       def request_phase # rubocop:disable MethodLength
+        p "xxx oauth request_phase 1"
         request_token = consumer.get_request_token({:oauth_callback => callback_url}, options.request_params)
         session["oauth"] ||= {}
         session["oauth"][name.to_s] = {"callback_confirmed" => request_token.callback_confirmed?, "request_token" => request_token.token, "request_secret" => request_token.secret}
+        p "xxx oauth request_phase 2"
 
         if request_token.callback_confirmed?
+          p "xxx oauth request_phase 3"
           redirect request_token.authorize_url(options[:authorize_params])
         else
+          p "xxx oauth request_phase 4"
           redirect request_token.authorize_url(options[:authorize_params].merge(:oauth_callback => callback_url))
         end
 
       rescue ::Timeout::Error => e
+        p "xxx oauth request_phase 5: #{e}"
         fail!(:timeout, e)
       rescue ::Net::HTTPFatalError, ::OpenSSL::SSL::SSLError => e
+        p "xxx oauth request_phase 6: #{e}"
         fail!(:service_unavailable, e)
       end
 
