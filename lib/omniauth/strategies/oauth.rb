@@ -25,9 +25,11 @@ module OmniAuth
       end
 
       def request_phase # rubocop:disable MethodLength
-        p "xxx oauth request_phase 1"
+        p "xxx oauth request_phase 1 options.request_params: #{options.request_params}"
         request_token = consumer.get_request_token({:oauth_callback => callback_url}, options.request_params)
+        p "xxx oauth request_phase 1a request_token: #{request_token}"
         session["oauth"] ||= {}
+        p "xxx oauth request_phase 1b"
         session["oauth"][name.to_s] = {"callback_confirmed" => request_token.callback_confirmed?, "request_token" => request_token.token, "request_secret" => request_token.secret}
         p "xxx oauth request_phase 2"
 
